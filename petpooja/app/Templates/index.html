@@ -1,0 +1,704 @@
+<!-- base.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Kitchen - Smart Restaurant Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+          <div class="flex">
+            <div class="flex-shrink-0 flex items-center">
+              <i class="fas fa-utensils text-indigo-600 text-2xl mr-2"></i>
+              <span class="font-bold text-xl text-indigo-600">AI Kitchen</span>
+            </div>
+            <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+              <a
+                href="#"
+                class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              >
+                Dashboard
+              </a>
+              <a
+                href="#"
+                class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              >
+                Inventory
+              </a>
+              <a
+                href="#"
+                class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              >
+                Waste Management
+              </a>
+              <a
+                href="#"
+                class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              >
+                Menu Optimization
+              </a>
+              <a
+                href="#"
+                class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              >
+                Analytics
+              </a>
+              <a
+                href="#"
+                class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              >
+                Settings
+              </a>
+            </div>
+          </div>
+          <div class="hidden sm:ml-6 sm:flex sm:items-center">
+            <button
+              class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              <span class="sr-only">View notifications</span>
+              <i class="fas fa-bell"></i>
+            </button>
+            <div class="ml-3 relative">
+              <div>
+                <button
+                  class="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  <span class="sr-only">Open user menu</span>
+                  <img
+                    class="h-8 w-8 rounded-full"
+                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    alt=""
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="-mr-2 flex items-center sm:hidden">
+            <button
+              type="button"
+              class="bg-white inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+            >
+              <span class="sr-only">Open main menu</span>
+              <i class="fas fa-bars"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <!-- Welcome Section -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Welcome to AI Kitchen</h1>
+        <p class="mt-2 text-gray-600">
+          Smart restaurant management powered by AI. Minimize waste, maximize
+          efficiency.
+        </p>
+      </div>
+
+      <!-- Stats Overview -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div
+          class="bg-white overflow-hidden shadow rounded-lg transition-all duration-300 stats-card"
+        >
+          <div class="p-5">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3">
+                <i class="fas fa-chart-line text-white"></i>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">
+                    Today's Revenue
+                  </dt>
+                  <dd>
+                    <div class="text-lg font-medium text-gray-900">
+                      $4,282.40
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 px-5 py-3">
+            <div class="text-sm">
+              <a
+                href="#"
+                class="font-medium text-indigo-600 hover:text-indigo-500"
+                >View details</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="bg-white overflow-hidden shadow rounded-lg transition-all duration-300 stats-card"
+        >
+          <div class="p-5">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
+                <i class="fas fa-box text-white"></i>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">
+                    Inventory Health
+                  </dt>
+                  <dd>
+                    <div class="text-lg font-medium text-gray-900">92%</div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 px-5 py-3">
+            <div class="text-sm">
+              <a
+                href="#"
+                class="font-medium text-indigo-600 hover:text-indigo-500"
+                >View details</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="bg-white overflow-hidden shadow rounded-lg transition-all duration-300 stats-card"
+        >
+          <div class="p-5">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 bg-red-500 rounded-md p-3">
+                <i class="fas fa-trash-alt text-white"></i>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">
+                    Waste This Week
+                  </dt>
+                  <dd>
+                    <div class="text-lg font-medium text-gray-900">3.2%</div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 px-5 py-3">
+            <div class="text-sm">
+              <a
+                href="#"
+                class="font-medium text-indigo-600 hover:text-indigo-500"
+                >View details</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="bg-white overflow-hidden shadow rounded-lg transition-all duration-300 stats-card"
+        >
+          <div class="p-5">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3">
+                <i class="fas fa-utensils text-white"></i>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">
+                    Popular Items
+                  </dt>
+                  <dd>
+                    <div class="text-lg font-medium text-gray-900">
+                      12 items
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 px-5 py-3">
+            <div class="text-sm">
+              <a
+                href="#"
+                class="font-medium text-indigo-600 hover:text-indigo-500"
+                >View details</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Sections -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Inventory Alerts -->
+        <div class="bg-white shadow rounded-lg">
+          <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+            <h3
+              class="text-lg leading-6 font-medium text-gray-900 flex items-center"
+            >
+              <i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i>
+              Inventory Alerts
+            </h3>
+          </div>
+          <div class="p-4">
+            <ul class="divide-y divide-gray-200">
+              <li class="py-3">
+                <div class="flex items-center">
+                  <div class="min-w-0 flex-1">
+                    <p class="text-sm font-medium text-gray-900 truncate">
+                      Tomatoes
+                    </p>
+                    <p class="text-sm text-gray-500">
+                      Low stock - 2.3 kg remaining
+                    </p>
+                  </div>
+                  <div>
+                    <button
+                      class="bg-indigo-100 text-indigo-700 py-1 px-3 rounded-full text-xs font-medium"
+                    >
+                      Order
+                    </button>
+                  </div>
+                </div>
+              </li>
+              <li class="py-3">
+                <div class="flex items-center">
+                  <div class="min-w-0 flex-1">
+                    <p class="text-sm font-medium text-gray-900 truncate">
+                      Chicken Breast
+                    </p>
+                    <p class="text-sm text-gray-500">
+                      Expiring in 2 days - 5.4 kg
+                    </p>
+                  </div>
+                  <div>
+                    <button
+                      class="bg-red-100 text-red-700 py-1 px-3 rounded-full text-xs font-medium"
+                    >
+                      Use Soon
+                    </button>
+                  </div>
+                </div>
+              </li>
+              <li class="py-3">
+                <div class="flex items-center">
+                  <div class="min-w-0 flex-1">
+                    <p class="text-sm font-medium text-gray-900 truncate">
+                      Olive Oil
+                    </p>
+                    <p class="text-sm text-gray-500">
+                      Low stock - 1 bottle remaining
+                    </p>
+                  </div>
+                  <div>
+                    <button
+                      class="bg-indigo-100 text-indigo-700 py-1 px-3 rounded-full text-xs font-medium"
+                    >
+                      Order
+                    </button>
+                  </div>
+                </div>
+              </li>
+              <li class="py-3">
+                <div class="flex items-center">
+                  <div class="min-w-0 flex-1">
+                    <p class="text-sm font-medium text-gray-900 truncate">
+                      Bell Peppers
+                    </p>
+                    <p class="text-sm text-gray-500">
+                      Predict spoilage - 3 days left
+                    </p>
+                  </div>
+                  <div>
+                    <button
+                      class="bg-yellow-100 text-yellow-700 py-1 px-3 rounded-full text-xs font-medium"
+                    >
+                      Use Now
+                    </button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+            <div class="mt-4">
+              <a
+                href="#"
+                class="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+                >View all alerts <i class="fas fa-arrow-right ml-1"></i
+              ></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Waste Reduction -->
+        <div class="bg-white shadow rounded-lg">
+          <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+            <h3
+              class="text-lg leading-6 font-medium text-gray-900 flex items-center"
+            >
+              <i class="fas fa-leaf text-green-500 mr-2"></i>
+              Waste Reduction Opportunities
+            </h3>
+          </div>
+          <div class="p-4">
+            <div class="mb-4">
+              <div class="relative pt-1">
+                <div class="flex mb-2 items-center justify-between">
+                  <div>
+                    <span class="text-sm font-medium text-gray-900"
+                      >Weekly Waste Goal</span
+                    >
+                  </div>
+                  <div class="text-right">
+                    <span class="text-sm font-semibold text-indigo-700"
+                      >3.2% / 3.0%</span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="overflow-hidden h-2 text-xs flex rounded bg-indigo-200"
+                >
+                  <div
+                    style="width: 93%"
+                    class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-indigo-500"
+                  ></div>
+                </div>
+              </div>
+            </div>
+            <ul class="divide-y divide-gray-200">
+              <li class="py-3">
+                <div class="flex items-center">
+                  <div class="min-w-0 flex-1">
+                    <p class="text-sm font-medium text-gray-900">
+                      Modify Seafood Order
+                    </p>
+                    <p class="text-sm text-gray-500">
+                      Reduce by 15% based on consumption data
+                    </p>
+                  </div>
+                  <div>
+                    <span
+                      class="bg-green-100 text-green-700 py-1 px-3 rounded-full text-xs font-medium"
+                      >-$120/wk</span
+                    >
+                  </div>
+                </div>
+              </li>
+              <li class="py-3">
+                <div class="flex items-center">
+                  <div class="min-w-0 flex-1">
+                    <p class="text-sm font-medium text-gray-900">
+                      Special: Vegetable Soup
+                    </p>
+                    <p class="text-sm text-gray-500">
+                      Utilize aging produce inventory
+                    </p>
+                  </div>
+                  <div>
+                    <span
+                      class="bg-green-100 text-green-700 py-1 px-3 rounded-full text-xs font-medium"
+                      >-$85/wk</span
+                    >
+                  </div>
+                </div>
+              </li>
+              <li class="py-3">
+                <div class="flex items-center">
+                  <div class="min-w-0 flex-1">
+                    <p class="text-sm font-medium text-gray-900">
+                      Portion Size Adjustment
+                    </p>
+                    <p class="text-sm text-gray-500">
+                      Reduce pasta portions by 10%
+                    </p>
+                  </div>
+                  <div>
+                    <span
+                      class="bg-green-100 text-green-700 py-1 px-3 rounded-full text-xs font-medium"
+                      >-$65/wk</span
+                    >
+                  </div>
+                </div>
+              </li>
+            </ul>
+            <div class="mt-4">
+              <a
+                href="#"
+                class="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+                >View all opportunities <i class="fas fa-arrow-right ml-1"></i
+              ></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Menu Performance -->
+        <div class="bg-white shadow rounded-lg">
+          <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+            <h3
+              class="text-lg leading-6 font-medium text-gray-900 flex items-center"
+            >
+              <i class="fas fa-chart-pie text-purple-500 mr-2"></i>
+              Menu Performance
+            </h3>
+          </div>
+          <div class="p-4">
+            <div class="space-y-3">
+              <div class="bg-green-50 p-3 rounded-lg">
+                <p class="text-sm font-medium text-gray-900">Top Performers</p>
+                <ul class="mt-2 space-y-2">
+                  <li class="flex justify-between items-center">
+                    <span class="text-sm text-gray-700">Grilled Salmon</span>
+                    <span class="text-sm font-medium text-green-700"
+                      >+18% sales</span
+                    >
+                  </li>
+                  <li class="flex justify-between items-center">
+                    <span class="text-sm text-gray-700">Truffle Pasta</span>
+                    <span class="text-sm font-medium text-green-700"
+                      >+12% sales</span
+                    >
+                  </li>
+                </ul>
+              </div>
+
+              <div class="bg-red-50 p-3 rounded-lg">
+                <p class="text-sm font-medium text-gray-900">Underperforming</p>
+                <ul class="mt-2 space-y-2">
+                  <li class="flex justify-between items-center">
+                    <span class="text-sm text-gray-700">Vegetable Curry</span>
+                    <span class="text-sm font-medium text-red-700"
+                      >-8% sales</span
+                    >
+                  </li>
+                  <li class="flex justify-between items-center">
+                    <span class="text-sm text-gray-700">Chicken Salad</span>
+                    <span class="text-sm font-medium text-red-700"
+                      >-5% sales</span
+                    >
+                  </li>
+                </ul>
+              </div>
+
+              <div class="bg-yellow-50 p-3 rounded-lg">
+                <p class="text-sm font-medium text-gray-900">
+                  AI Recommendations
+                </p>
+                <ul class="mt-2 space-y-2">
+                  <li class="text-sm text-gray-700">
+                    Add seasonal special: "Summer Berry Dessert"
+                  </li>
+                  <li class="text-sm text-gray-700">
+                    Price reduction on Vegetable Curry (-10%)
+                  </li>
+                  <li class="text-sm text-gray-700">
+                    Feature Truffle Pasta in weekend promotions
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="mt-4">
+              <a
+                href="#"
+                class="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+                >View detailed analysis <i class="fas fa-arrow-right ml-1"></i
+              ></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Usage & Training Section -->
+      <div class="mt-8 bg-white shadow rounded-lg overflow-hidden">
+        <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+          <h3
+            class="text-lg leading-6 font-medium text-gray-900 flex items-center"
+          >
+            <i class="fas fa-robot text-indigo-500 mr-2"></i>
+            AI System Status
+          </h3>
+        </div>
+        <div class="p-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <h4 class="font-medium text-gray-900 mb-2">Computer Vision</h4>
+              <div class="flex items-center mb-2">
+                <div class="w-2/3 bg-gray-200 rounded-full h-2.5">
+                  <div
+                    class="bg-green-600 h-2.5 rounded-full"
+                    style="width: 95%"
+                  ></div>
+                </div>
+                <span class="ml-2 text-sm text-gray-700">95%</span>
+              </div>
+              <p class="text-xs text-gray-500">
+                Recognition accuracy for inventory items
+              </p>
+              <div class="mt-2">
+                <span
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                >
+                  <i class="fas fa-check-circle mr-1"></i> Operating normally
+                </span>
+              </div>
+            </div>
+
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <h4 class="font-medium text-gray-900 mb-2">Prediction Model</h4>
+              <div class="flex items-center mb-2">
+                <div class="w-2/3 bg-gray-200 rounded-full h-2.5">
+                  <div
+                    class="bg-yellow-500 h-2.5 rounded-full"
+                    style="width: 82%"
+                  ></div>
+                </div>
+                <span class="ml-2 text-sm text-gray-700">82%</span>
+              </div>
+              <p class="text-xs text-gray-500">
+                Accuracy of food spoilage predictions
+              </p>
+              <div class="mt-2">
+                <span
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"
+                >
+                  <i class="fas fa-sync-alt mr-1"></i> Training in progress
+                </span>
+              </div>
+            </div>
+
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <h4 class="font-medium text-gray-900 mb-2">Menu Optimization</h4>
+              <div class="flex items-center mb-2">
+                <div class="w-2/3 bg-gray-200 rounded-full h-2.5">
+                  <div
+                    class="bg-blue-600 h-2.5 rounded-full"
+                    style="width: 88%"
+                  ></div>
+                </div>
+                <span class="ml-2 text-sm text-gray-700">88%</span>
+              </div>
+              <p class="text-xs text-gray-500">
+                Recommendation relevance score
+              </p>
+              <div class="mt-2">
+                <span
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                >
+                  <i class="fas fa-cog mr-1"></i> Optimizing
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-4 border-t border-gray-200">
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-gray-500"
+                >Last system update: Today, 8:45 AM</span
+              >
+              <button
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+              >
+                <i class="fas fa-camera mr-2"></i> Run Manual Scan
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Company Info -->
+                <div>
+                    <div class="flex items-center">
+                        <i class="fas fa-utensils text-indigo-600 text-xl mr-2"></i>
+                        <span class="text-indigo-600 font-semibold text-lg">AI Kitchen</span>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-500">
+                        Crafting culinary experiences with artificial intelligence since 2023.
+                    </p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-700 tracking-wider uppercase">Quick Links</h3>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-indigo-600">Home</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-indigo-600">About Us</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-indigo-600">Services</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-indigo-600">Blog</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-indigo-600">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Legal -->
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-700 tracking-wider uppercase">Legal</h3>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-indigo-600">Privacy Policy</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-indigo-600">Terms of Service</a></li>
+                        <li><a href="#" class="text-sm text-gray-500 hover:text-indigo-600">Cookie Policy</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Connect with Us -->
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-700 tracking-wider uppercase">Connect with Us</h3>
+                    <div class="mt-4 flex space-x-4">
+                        <a href="#" class="text-gray-500 hover:text-indigo-600">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-500 hover:text-indigo-600">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-500 hover:text-indigo-600">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-500 hover:text-indigo-600">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </a>
+                    </div>
+                    <div class="mt-4">
+                        <h4 class="text-sm font-medium text-gray-700">Subscribe to our newsletter</h4>
+                        <div class="mt-2 flex">
+                            <input type="email" placeholder="Enter your email" class="px-3 py-2 border border-gray-300 rounded-l-md w-full text-sm" />
+                            <button class="bg-indigo-600 text-white px-3 py-2 rounded-r-md text-sm hover:bg-indigo-700">
+                                Subscribe
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 border-t border-gray-200 pt-8 md:flex md:items-center md:justify-between">
+                <div class="flex space-x-6 md:order-2">
+                    <a href="#" class="text-sm text-gray-500 hover:text-indigo-600">Sitemap</a>
+                    <a href="#" class="text-sm text-gray-500 hover:text-indigo-600">Accessibility</a>
+                    <a href="#" class="text-sm text-gray-500 hover:text-indigo-600">FAQ</a>
+                </div>
+                <p class="mt-8 text-sm text-gray-500 md:mt-0 md:order-1">
+                    © 2025 AI Kitchen. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+  
+  </body>
+</html>
