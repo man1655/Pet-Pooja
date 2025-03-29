@@ -6,4 +6,5 @@ from . import views
 
 urlpatterns = [
     path('',views.index,name="Home") ,
+    path("inventory/", views.inventory_view, name="inventory"),
 ]
