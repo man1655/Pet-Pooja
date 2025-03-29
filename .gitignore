@@ -1,0 +1,27 @@
+# Virtual environment
+venv/
+
+
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# VS Code settings
+.vscode/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Environment variables
+.env
+
+# Build and distribution
+build/
+dist/
+*.egg-info/
+
+# Ignore node_modules if using React with Django
+node_modules/
+
+
