@@ -5,22 +5,23 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login , logout
 from .models import UserData
+import os
+from django.conf import settings
 
-
-
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.metrics import mean_absolute_percentage_error
 
 
 
 # Create your views here.
-@login_required(login_url='login-page')
 def index(request) :
     return render(request , 'index.html')
 
 def inventory_view(request):
     return render(request, "inventory.html")
-
-def login_page(request) :
-    return render(request , 'login.html')
 
 
 
@@ -102,9 +103,11 @@ from django.utils.timezone import now
 from django.db.models import Sum, F
 from datetime import timedelta
 from .models import Inventory, Waste
+from django.http import JsonResponse
+from datetime import timedelta, date
 
 def move_expired_inventory():
-    today = now().date()
+    today = date.today()
     seven_days_ago = today - timedelta(days=7)
 
     grouped_inventory = (
@@ -123,19 +126,68 @@ def move_expired_inventory():
             Waste.objects.create(name=item_name, quantity=item_quantity)
             Inventory.objects.filter(name=item_name, date_added=item_date).delete()
 
-
-
 def test(request):
-    # Move expired inventory before rendering the page
+    # Move expired inventory before returning data
     move_expired_inventory()
 
-    # Group inventory by name and sum the quantities
-    inventory_items = (
+    # Group inventory by name, sum quantities, and include date_added
+    inventory_items = list(
         Inventory.objects
-        .values('name')
+        .values('name', 'date_added')  # Include date_added
         .annotate(total_quantity=Sum('quantity'))
         .order_by('name')
     )
-    waste_items = Waste.objects.all()
 
-    return render(request, 'test.html', {'inventory_items': inventory_items, 'waste_items': waste_items})
+    # Convert date format for JSON response
+    for item in inventory_items:
+        item['date_added'] = item['date_added'].strftime('%Y-%m-%d')  # Format date as YYYY-MM-DD
+
+    waste_items = list(Waste.objects.values('name', 'quantity', 'date'))  # Include date
+
+    # Convert waste date format
+    for waste in waste_items:
+        waste['date'] = waste['date'].strftime('%Y-%m-%d')
+
+    data = menu_analysis()
+
+    most_sold_cleaned = [{"item": key, "quantity": int(value)} for key, value in data[0].items()]
+    least_sold_cleaned = [{"item": key, "quantity": int(value)} for key, value in data[1].items()]
+
+    # Return JSON response
+    return JsonResponse({
+        'inventory_items': inventory_items,
+        'waste_items': waste_items,
+        'most_sold': most_sold_cleaned,
+        'least_sold': least_sold_cleaned
+    })
+def menu_analysis():
+   
+
+    file_path = os.path.join(settings.BASE_DIR, "app", "Balaji_Fast_Food_Sales_Final_Complete.csv")
+    df = pd.read_csv(file_path)
+
+    # Convert 'date' column to datetime format
+    df['date'] = pd.to_datetime(df['date'])
+
+    # Sort dataset by date in descending order
+    df = df.sort_values(by='date', ascending=False)
+
+    # Get the last 7 unique dates
+    last_7_dates = df['date'].drop_duplicates().head(7)
+
+    # Filter data for the last 7 unique dates
+    df_last_7_days = df[df['date'].isin(last_7_dates)]
+
+    # Group by 'item_name' and sum the 'quantity' sold
+    item_sales_last_7_days = df_last_7_days.groupby('item_name')['quantity'].sum()
+
+    # Get the two most sold items
+    most_sold_last_7 = item_sales_last_7_days.nlargest(2)
+
+    # Get the two least sold items
+    least_sold_last_7 = item_sales_last_7_days.nsmallest(2)
+    mostsold=dict(most_sold_last_7)
+    leastsold=dict(least_sold_last_7)
+    
+    return [mostsold , leastsold]
+

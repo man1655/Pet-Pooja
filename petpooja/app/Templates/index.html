@@ -30,7 +30,7 @@
             </div>
             <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
               <a
-                href="#"
+                href="/"
                 class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
                 Dashboard
@@ -245,6 +245,7 @@
       </div>
 
       <!-- Main Sections -->
+      {% comment %}
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Inventory Alerts -->
         <div class="bg-white shadow rounded-lg">
@@ -344,185 +345,229 @@
             </div>
           </div>
         </div>
+        {% endcomment %}
 
-        <!-- Waste Reduction -->
-        <div class="bg-white shadow rounded-lg">
-          <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-            <h3
-              class="text-lg leading-6 font-medium text-gray-900 flex items-center"
-            >
-              <i class="fas fa-leaf text-green-500 mr-2"></i>
-              Waste Reduction Opportunities
-            </h3>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Inventory Alerts -->
+          <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+              <h3
+                class="text-lg leading-6 font-medium text-gray-900 flex items-center"
+              >
+                <i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i>
+                Inventory Alerts
+              </h3>
+            </div>
+            <div class="p-4">
+              <ul id="inventoryAlertsList" class="divide-y divide-gray-200 capitalize "></ul>
+              <div class="mt-4">
+                <button onclick="openModal()" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                  View all alerts <i class="fas fa-arrow-right ml-1"></i>
+              </button>
+              </div>
+            </div>
           </div>
-          <div class="p-4">
-            <div class="mb-4">
-              <div class="relative pt-1">
-                <div class="flex mb-2 items-center justify-between">
-                  <div>
-                    <span class="text-sm font-medium text-gray-900"
-                      >Weekly Waste Goal</span
-                    >
-                  </div>
-                  <div class="text-right">
-                    <span class="text-sm font-semibold text-indigo-700"
-                      >3.2% / 3.0%</span
-                    >
-                  </div>
-                </div>
-                <div
-                  class="overflow-hidden h-2 text-xs flex rounded bg-indigo-200"
+
+          <!-- Tailwind Modal -->
+          <div
+            id="inventoryModal"
+            class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden flex justify-center items-center z-50"
+          >
+            <div class="bg-white rounded-lg shadow-lg w-96 max-w-full z-50">
+              <div class="p-4 border-b flex justify-between items-center">
+                <h3 class="text-lg font-medium text-gray-900">
+                  All Inventory Alerts
+                </h3>
+                <button
+                  onclick="closeModal()"
+                  class="text-gray-400 hover:text-gray-600"
                 >
+                  &times;
+                </button>
+              </div>
+              <div class="p-4 max-h-60 overflow-y-auto">
+                <ul
+                  id="modalInventoryList"
+                  class="divide-y divide-gray-200"
+                ></ul>
+              </div>
+              <div class="p-4 text-right border-t">
+                <button
+                  onclick="closeModal()"
+                  class="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Waste Reduction -->
+          {% comment %} <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+              <h3
+                class="text-lg leading-6 font-medium text-gray-900 flex items-center"
+              >
+                <i class="fas fa-leaf text-green-500 mr-2"></i>
+                Waste Reduction Opportunities
+              </h3>
+            </div>
+            <div class="p-4">
+              <div class="mb-4">
+                <div class="relative pt-1">
+                  <div class="flex mb-2 items-center justify-between ">
+                    <div>
+                      <span class="text-sm font-medium text-gray-900"
+                        >Weekly Waste Goal</span
+                      >
+                    </div>
+                    <div class="text-right">
+                      <span class="text-sm font-semibold text-indigo-700"
+                        >3.2% / 3.0%</span
+                      >
+                    </div>
+                  </div>
                   <div
-                    style="width: 93%"
-                    class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-indigo-500"
-                  ></div>
+                    class="overflow-hidden h-2 text-xs flex rounded bg-indigo-200"
+                  >
+                    <div
+                      style="width: 93%"
+                      class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-indigo-500"
+                    ></div>
+                  </div>
                 </div>
               </div>
+              <ul class="divide-y divide-gray-200">
+                <li class="py-3">
+                  <div class="flex items-center">
+                    <div class="min-w-0 flex-1">
+                      <p class="text-sm font-medium text-gray-900">
+                        Modify Seafood Order
+                      </p>
+                      <p class="text-sm text-gray-500">
+                        Reduce by 15% based on consumption data
+                      </p>
+                    </div>
+                    <div>
+                      <span
+                        class="bg-green-100 text-green-700 py-1 px-3 rounded-full text-xs font-medium"
+                        >-$120/wk</span
+                      >
+                    </div>
+                  </div>
+                </li>
+                <li class="py-3">
+                  <div class="flex items-center">
+                    <div class="min-w-0 flex-1">
+                      <p class="text-sm font-medium text-gray-900">
+                        Special: Vegetable Soup
+                      </p>
+                      <p class="text-sm text-gray-500">
+                        Utilize aging produce inventory
+                      </p>
+                    </div>
+                    <div>
+                      <span
+                        class="bg-green-100 text-green-700 py-1 px-3 rounded-full text-xs font-medium"
+                        >-$85/wk</span
+                      >
+                    </div>
+                  </div>
+                </li>
+                <li class="py-3">
+                  <div class="flex items-center">
+                    <div class="min-w-0 flex-1">
+                      <p class="text-sm font-medium text-gray-900">
+                        Portion Size Adjustment
+                      </p>
+                      <p class="text-sm text-gray-500">
+                        Reduce pasta portions by 10%
+                      </p>
+                    </div>
+                    <div>
+                      <span
+                        class="bg-green-100 text-green-700 py-1 px-3 rounded-full text-xs font-medium"
+                        >-$65/wk</span
+                      >
+                    </div>
+                  </div>
+                </li>
+              </ul>
+              <div class="mt-4">
+                <a
+                  href="#"
+                  class="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+                  >View all opportunities <i class="fas fa-arrow-right ml-1"></i
+                ></a>
+              </div>
             </div>
-            <ul class="divide-y divide-gray-200">
-              <li class="py-3">
-                <div class="flex items-center">
-                  <div class="min-w-0 flex-1">
-                    <p class="text-sm font-medium text-gray-900">
-                      Modify Seafood Order
-                    </p>
-                    <p class="text-sm text-gray-500">
-                      Reduce by 15% based on consumption data
-                    </p>
-                  </div>
-                  <div>
-                    <span
-                      class="bg-green-100 text-green-700 py-1 px-3 rounded-full text-xs font-medium"
-                      >-$120/wk</span
-                    >
-                  </div>
-                </div>
-              </li>
-              <li class="py-3">
-                <div class="flex items-center">
-                  <div class="min-w-0 flex-1">
-                    <p class="text-sm font-medium text-gray-900">
-                      Special: Vegetable Soup
-                    </p>
-                    <p class="text-sm text-gray-500">
-                      Utilize aging produce inventory
-                    </p>
-                  </div>
-                  <div>
-                    <span
-                      class="bg-green-100 text-green-700 py-1 px-3 rounded-full text-xs font-medium"
-                      >-$85/wk</span
-                    >
-                  </div>
-                </div>
-              </li>
-              <li class="py-3">
-                <div class="flex items-center">
-                  <div class="min-w-0 flex-1">
-                    <p class="text-sm font-medium text-gray-900">
-                      Portion Size Adjustment
-                    </p>
-                    <p class="text-sm text-gray-500">
-                      Reduce pasta portions by 10%
-                    </p>
-                  </div>
-                  <div>
-                    <span
-                      class="bg-green-100 text-green-700 py-1 px-3 rounded-full text-xs font-medium"
-                      >-$65/wk</span
-                    >
-                  </div>
-                </div>
-              </li>
-            </ul>
-            <div class="mt-4">
-              <a
-                href="#"
-                class="text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                >View all opportunities <i class="fas fa-arrow-right ml-1"></i
-              ></a>
+          </div> {% endcomment %}
+          <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 flex items-center">
+                    <i class="fas fa-leaf text-green-500 mr-2"></i>
+                    Waste Reduction Opportunities
+                </h3>
             </div>
-          </div>
+            <div class="p-4">
+                <ul id="waste-opportunities-list" class="divide-y divide-gray-200">
+                    <!-- Waste reduction items will load here -->
+                </ul>
+            </div>
         </div>
+        
+        
 
-        <!-- Menu Performance -->
-        <div class="bg-white shadow rounded-lg">
-          <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-            <h3
-              class="text-lg leading-6 font-medium text-gray-900 flex items-center"
-            >
-              <i class="fas fa-chart-pie text-purple-500 mr-2"></i>
-              Menu Performance
-            </h3>
-          </div>
-          <div class="p-4">
-            <div class="space-y-3">
-              <div class="bg-green-50 p-3 rounded-lg">
-                <p class="text-sm font-medium text-gray-900">Top Performers</p>
-                <ul class="mt-2 space-y-2">
-                  <li class="flex justify-between items-center">
-                    <span class="text-sm text-gray-700">Grilled Salmon</span>
-                    <span class="text-sm font-medium text-green-700"
-                      >+18% sales</span
-                    >
-                  </li>
-                  <li class="flex justify-between items-center">
-                    <span class="text-sm text-gray-700">Truffle Pasta</span>
-                    <span class="text-sm font-medium text-green-700"
-                      >+12% sales</span
-                    >
-                  </li>
-                </ul>
-              </div>
-
-              <div class="bg-red-50 p-3 rounded-lg">
-                <p class="text-sm font-medium text-gray-900">Underperforming</p>
-                <ul class="mt-2 space-y-2">
-                  <li class="flex justify-between items-center">
-                    <span class="text-sm text-gray-700">Vegetable Curry</span>
-                    <span class="text-sm font-medium text-red-700"
-                      >-8% sales</span
-                    >
-                  </li>
-                  <li class="flex justify-between items-center">
-                    <span class="text-sm text-gray-700">Chicken Salad</span>
-                    <span class="text-sm font-medium text-red-700"
-                      >-5% sales</span
-                    >
-                  </li>
-                </ul>
-              </div>
-
-              <div class="bg-yellow-50 p-3 rounded-lg">
-                <p class="text-sm font-medium text-gray-900">
-                  AI Recommendations
-                </p>
-                <ul class="mt-2 space-y-2">
-                  <li class="text-sm text-gray-700">
-                    Add seasonal special: "Summer Berry Dessert"
-                  </li>
-                  <li class="text-sm text-gray-700">
-                    Price reduction on Vegetable Curry (-10%)
-                  </li>
-                  <li class="text-sm text-gray-700">
-                    Feature Truffle Pasta in weekend promotions
-                  </li>
-                </ul>
-              </div>
+          <!-- Menu Performance -->
+          <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 flex items-center">
+                    <i class="fas fa-chart-pie text-purple-500 mr-2"></i> Menu Performance
+                </h3>
             </div>
-            <div class="mt-4">
-              <a
-                href="#"
-                class="text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                >View detailed analysis <i class="fas fa-arrow-right ml-1"></i
-              ></a>
+            <div class="p-4">
+
+                <div class="space-y-3">
+        
+                    <!-- Top Performers Section -->
+                    <div class="bg-green-50 p-3 rounded-lg">
+                        <p class="text-sm font-medium text-gray-900">Top Performers</p>
+                        <ul id="top-performers-list" class="mt-2 space-y-2">
+                           
+                        </ul>
+                    </div>
+        
+                    <!-- Underperforming Section -->
+                    <div class="bg-red-50 p-3 rounded-lg">
+                        <p class="text-sm font-medium text-gray-900">Underperforming</p>
+                        <ul id="underperforming-list" class="mt-2 space-y-2">
+                            <!-- Dynamic Data Will Be Inserted Here -->
+                        </ul>
+                    </div>
+        
+                    <!-- AI Recommendations (Static) -->
+                    <div class="bg-yellow-50 p-3 rounded-lg">
+                        <p class="text-sm font-medium text-gray-900"> Recommendations</p>
+                        <ul class="mt-2 space-y-2">
+                            <li class="text-sm text-gray-700">Add seasonal special: "Summer Berry Dessert"</li>
+                            <li class="text-sm text-gray-700">Price reduction on Vegetable Curry (-10%)</li>
+                            <li class="text-sm text-gray-700">Feature Truffle Pasta in weekend promotions</li>
+                        </ul>
+                    </div>
+        
+                </div>
+
+                <div class="mt-4">
+                    <a href="#" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                        View detailed analysis <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
             </div>
-          </div>
         </div>
       </div>
-
+        
       <!-- Usage & Training Section -->
+
       <div class="mt-8 bg-white shadow rounded-lg overflow-hidden">
         <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
           <h3
@@ -556,6 +601,7 @@
                 </span>
               </div>
             </div>
+
 
             <div class="bg-gray-50 p-4 rounded-lg">
               <h4 class="font-medium text-gray-900 mb-2">Prediction Model</h4>
@@ -713,6 +759,32 @@
               </li>
             </ul>
           </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Item Name</th>
+                <th>Quantity</th>
+                <th>Date Added</th>
+                <!-- New column for Date -->
+              </tr>
+            </thead>
+            <tbody id="inventoryTableBody">
+              <!-- Inventory data will be populated here -->
+            </tbody>
+          </table>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Waste Name</th>
+                <th>Quantity</th>
+              </tr>
+            </thead>
+            <tbody id="wasteTableBody">
+              <!-- Waste data will be populated here -->
+            </tbody>
+          </table>
 
           <!-- Connect with Us -->
           <div>
@@ -938,6 +1010,203 @@
           .getElementById("saveResultsButton")
           .addEventListener("click", saveResults);
       });
-    </script>
+
+        document.addEventListener("DOMContentLoaded", function() {
+            fetchInventoryData();
+        });
+        
+        function fetchInventoryData() {
+            fetch('/test/')  
+            .then(response => response.json())
+            .then(data => {
+                updateInventoryAlerts(data.inventory_items);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+        }
+
+        
+        
+        function updateInventoryAlerts(inventoryItems) {
+            const alertsList = document.getElementById('inventoryAlertsList');
+            const modalList = document.getElementById('modalInventoryList');
+        
+            if (!alertsList || !modalList) return;
+        
+            alertsList.innerHTML = ''; 
+            modalList.innerHTML = '';
+        
+            // Sort inventory by expiry days
+            inventoryItems.sort((a, b) => daysUntilExpiry(a.date_added) - daysUntilExpiry(b.date_added));
+        
+            let hasAlerts = false; 
+        
+            inventoryItems.forEach((item, index) => {
+                let expiryDays = daysUntilExpiry(item.date_added);
+                let alertMessage = '';
+                let buttonClass = '';
+                let buttonText = '';
+        
+                if (expiryDays <= 2) {  
+                    alertMessage = `Expiring in ${expiryDays} days`;
+                    buttonClass = 'bg-red-100 text-red-700';
+                    buttonText = 'Use Fast';
+                } else if (expiryDays <= 4) {  
+                    alertMessage = `Expiring in ${expiryDays} days`;
+                    buttonClass = 'bg-yellow-100 text-yellow-700';
+                    buttonText = 'Use Soon';
+                } else if (item.total_quantity < 5) {  
+                    alertMessage = `Low stock - ${item.total_quantity} remaining`;
+                    buttonClass = 'bg-indigo-100 text-indigo-700';
+                    buttonText = 'Order';
+                }
+        
+                if (alertMessage) {
+                    hasAlerts = true;
+                    const alertItem = `
+                        <li class="py-3">
+                            <div class="flex items-center">
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-sm font-medium text-gray-900 truncate">${item.name}</p>
+                                    <p class="text-sm text-gray-500">${alertMessage}</p>
+                                </div>
+                                <div>
+                                    <button class="${buttonClass} py-1 px-3 rounded-full text-xs font-medium">
+                                        ${buttonText}
+                                    </button>
+                                </div>
+                            </div>
+                        </li>
+                    `;
+        
+                    // Show only the first 5 items in the main UI
+                    if (index < 5) {
+                        alertsList.innerHTML += alertItem;
+                    }
+        
+                    // Add all items to the modal
+                    modalList.innerHTML += alertItem;
+                }
+            });
+        
+            if (!hasAlerts) {
+                alertsList.innerHTML = '<li class="py-3 text-gray-500 text-sm">No new alerts</li>';
+            }
+        }
+        
+        // Helper function: Calculate days until expiry
+        function daysUntilExpiry(dateAdded) {
+            const addedDate = new Date(dateAdded);
+            const expiryDate = new Date(addedDate);
+            expiryDate.setDate(expiryDate.getDate() + 7); 
+        
+            const today = new Date();
+            const timeDiff = expiryDate - today;
+            return Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+        }
+        
+        // Auto-refresh inventory alerts every 30 seconds
+        setInterval(fetchInventoryData, 30000);
+        
+        // Open and close modal functions
+        function openModal() {
+            document.getElementById("inventoryModal").classList.remove("hidden");
+        }
+        function closeModal() {
+            document.getElementById("inventoryModal").classList.add("hidden");
+        }
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+          fetch("/test/")
+              .then(response => response.json())
+              .then(data => {
+                  updateWasteOpportunities(data.waste_items);
+              })
+              .catch(error => console.error("Error fetching waste data:", error));
+      });
+      
+      function updateWasteOpportunities(wasteItems) {
+          const wasteList = document.getElementById("waste-opportunities-list");
+          if (!wasteList) {
+              console.error("Waste list container not found!");
+              return;
+          }
+          wasteList.innerHTML = "";
+      
+          if (wasteItems.length === 0) {
+              wasteList.innerHTML = "<p class='text-sm text-gray-500'>No waste reduction opportunities available.</p>";
+              return;
+          }
+      
+          wasteItems.forEach(item => {
+              const costReduction = (item.quantity * 2).toFixed(2); // Example calculation: $2 per unit of waste
+      
+              const listItem = document.createElement("li");
+              listItem.classList.add("py-3");
+      
+              listItem.innerHTML = `
+                  <div class="flex items-center">
+                      <div class="min-w-0 flex-1">
+                          <p class="text-sm font-medium text-gray-900 truncate">${item.name}</p>
+                          <p class="text-sm text-gray-500">
+                              Reduce waste by optimizing usage (${item.quantity} units wasted)
+                          </p>
+                      </div>
+                      <div>
+                          <span class="bg-red-100 text-red-700 py-1 px-3 rounded-full text-xs font-medium">
+                              ${item.quantity} Units
+                          </span>
+                      </div>
+                  </div>
+              `;
+      
+              wasteList.appendChild(listItem);
+          });
+      }
+      
+      const changeSales = async () => {
+        try {
+            let response = await fetch('/test/');
+            let data = await response.json();
+    
+            let mostSold = data.most_sold;  // Get top 2 sold items
+            let leastSold = data.least_sold; // Get least 2 sold items
+    
+            // Update the HTML for "Top Performers"
+            let topPerformersList = document.getElementById("top-performers-list");
+            topPerformersList.innerHTML = ""; // Clear existing items
+    
+            mostSold.forEach(item => {
+                let li = document.createElement("li");
+                li.className = "flex justify-between items-center";
+                li.innerHTML = `<span class="text-sm text-gray-700">${item.item}</span>
+                                <span class="text-sm font-medium text-green-700">${item.quantity} sales</span>`;
+                topPerformersList.appendChild(li);
+            });
+    
+            // Update the HTML for "Underperforming"
+            let underPerformingList = document.getElementById("underperforming-list");
+            underPerformingList.innerHTML = ""; // Clear existing items
+    
+            leastSold.forEach(item => {
+                let li = document.createElement("li");
+                li.className = "flex justify-between items-center";
+                li.innerHTML = `<span class="text-sm text-gray-700">${item.item}</span>
+                                <span class="text-sm font-medium text-red-700">${item.quantity} sales</span>`;
+                underPerformingList.appendChild(li);
+            });
+    
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
+    
+    // Call function on page load
+    window.onload = changeSales;
+    
+    
+      
+            </script>
+            
   </body>
 </html>
