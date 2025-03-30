@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory & Waste Management</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+
+    <h2>Current Inventory</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Total Quantity</th>
+        </tr>
+        {% for item in inventory_items %}
+        <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.total_quantity }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="2">No items in inventory</td></tr>
+        {% endfor %}
+    </table>
+
+    <h2>Waste Items</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Removed Date</th>
+        </tr>
+        {% for item in waste_items %}
+        <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.date }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3">No waste items</td></tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>
