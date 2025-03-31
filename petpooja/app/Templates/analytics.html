@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supply Chain Analytics Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Styles -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3a86ff',
+                        secondary: '#8338ec',
+                        dark: '#1e293b',
+                        light: '#f8fafc',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        danger: '#ef4444',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+        }
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: absolute;
+                z-index: 50;
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-auto">
+            <!-- Top Navigation -->
+            <header class="bg-white border-b border-gray-200 py-4 px-6 flex items-center justify-between">
+                <div class="flex items-center">
+                    <button id="sidebarToggle" class="md:hidden mr-4 text-gray-500">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <h2 class="text-xl font-semibold text-dark">Analytics Dashboard</h2>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" placeholder="Search..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focu s:border-transparent">
+                    </div>
+                    <div class="relative">
+                        <i class="fas fa-bell text-xl text-gray-500"></i>
+                        <span class="absolute -top-1 -right-1 bg-danger text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
+                    </div>
+                    <div class="flex items-center">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="h-8 w-8 rounded-full mr-2">
+                        <span class="font-medium">John Doe</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="p-6">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-primary">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Total Inventory</p>
+                                <h3 id="totalInventory" class="text-2xl font-bold mt-1">0</h3>
+                                <p class="text-xs text-success mt-2"><i class="fas fa-arrow-up mr-1"></i> Loading...</p>
+                            </div>
+                            <div class="bg-primary/10 p-3 rounded-lg">
+                                <i class="fas fa-boxes text-primary text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-secondary">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Waste This Month</p>
+                                <h3 id="totalWaste" class="text-2xl font-bold mt-1">$0</h3>
+                                <p class="text-xs text-danger mt-2"><i class="fas fa-arrow-up mr-1"></i> Loading...</p>
+                            </div>
+                            <div class="bg-secondary/10 p-3 rounded-lg">
+                                <i class="fas fa-trash-alt text-secondary text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-success">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Forecast Accuracy</p>
+                                <h3 class="text-2xl font-bold mt-1">89%</h3>
+                                <p class="text-xs text-success mt-2"><i class="fas fa-arrow-up mr-1"></i> 4% improvement</p>
+                            </div>
+                            <div class="bg-success/10 p-3 rounded-lg">
+                                <i class="fas fa-chart-line text-success text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-warning">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Low Stock Items</p>
+                                <h3 id="lowStockItems" class="text-2xl font-bold mt-1">0</h3>
+                                <p class="text-xs text-danger mt-2"><i class="fas fa-exclamation-circle mr-1"></i> Needs attention</p>
+                            </div>
+                            <div class="bg-warning/10 p-3 rounded-lg">
+                                <i class="fas fa-exclamation-triangle text-warning text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <!-- Inventory Chart -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-semibold text-lg">Inventory Levels</h3>
+                           
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="inventoryChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Waste Chart -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-semibold text-lg">Waste Distribution</h3>
+                            <div class="flex items-center text-sm text-gray-500">
+                                <i class="fas fa-calendar-alt mr-2"></i>
+                                Last 30 days
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="wasteChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Forecast Chart -->
+                <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-semibold text-lg">Demand Forecast</h3>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 text-xs bg-primary/10 text-primary rounded-lg flex items-center">
+                                <i class="fas fa-download mr-1"></i> Export
+                            </button>
+                            <button class="px-3 py-1 text-xs bg-gray-100 text-gray-600 rounded-lg flex items-center">
+                                <i class="fas fa-cog mr-1"></i> Settings
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="forecastChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+
+    <!-- Loader -->
+    <div id="loader" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-6 rounded-xl shadow-lg max-w-sm w-full text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
+            <h3 class="font-medium text-lg mb-2">Loading Dashboard</h3>
+            <p class="text-gray-500">Please wait while we load your data...</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Toggle sidebar on mobile
+            document.getElementById('sidebarToggle').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.toggle('active');
+            });
+
+            // Show loader
+            showLoader();
+
+            // Fetch data from API
+            fetchData();
+        });
+
+        async function fetchData() {
+            try {
+                const response = await fetch('/analysis');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // Parse forecast data if it's a string
+                let forecastData = data.forecast;
+                if (typeof forecastData === 'string') {
+                    forecastData = JSON.parse(forecastData);
+                }
+
+                renderInventoryChart(data.inventory);
+                renderWasteChart(data.waste);
+                renderForecastChart(forecastData);
+                
+                // Update stats cards with real data
+                updateStatsCards(data);
+                
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                showError(error.message);
+            } finally {
+                hideLoader();
+            }
+        }
+
+        function updateStatsCards(data) {
+            // Update total inventory
+            const totalInventory = data.inventory.reduce((sum, item) => sum + item.quantity, 0);
+            document.querySelector('#totalInventory').textContent = totalInventory.toLocaleString();
+            
+            // Update waste amount (assuming $10 per unit for demo)
+            const totalWaste = data.waste.reduce((sum, item) => sum + item.quantity, 0);
+            document.querySelector('#totalWaste').textContent = `$${(totalWaste * 10).toLocaleString()}`;
+            
+            // Update low stock items (example threshold: < 20)
+            const lowStockItems = data.inventory.filter(item => item.quantity < 20).length;
+            document.querySelector('#lowStockItems').textContent = lowStockItems;
+            
+            // Update trend indicators
+            updateTrendIndicators();
+        }
+
+        function updateTrendIndicators() {
+            // In a real app, you would compare with previous data
+            // For demo, we'll use random improvements
+            const trends = [
+                { id: 'totalInventory', direction: Math.random() > 0.5 ? 'up' : 'down', value: Math.floor(Math.random() * 15) + 1 },
+                { id: 'totalWaste', direction: Math.random() > 0.3 ? 'up' : 'down', value: Math.floor(Math.random() * 10) + 1 },
+                { id: 'lowStockItems', direction: 'danger', text: 'Needs attention' }
+            ];
+            
+            trends.forEach(trend => {
+                const element = document.querySelector(`#${trend.id}`).nextElementSibling;
+                if (trend.direction === 'danger') {
+                    element.innerHTML = `<i class="fas fa-exclamation-circle mr-1"></i> ${trend.text}`;
+                    element.className = 'text-xs text-danger mt-2';
+                } else {
+                    const arrow = trend.direction === 'up' ? 'fa-arrow-up' : 'fa-arrow-down';
+                    const color = trend.direction === 'up' ? 'success' : 'danger';
+                    element.innerHTML = `<i class="fas ${arrow} mr-1"></i> ${trend.value}% from last month`;
+                    element.className = `text-xs text-${color} mt-2`;
+                }
+            });
+        }
+
+        function showLoader() {
+            document.getElementById("loader").classList.remove('hidden');
+        }
+
+        function hideLoader() {
+            document.getElementById("loader").classList.add('hidden');
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'fixed top-4 right-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg shadow-lg max-w-md z-50';
+            errorDiv.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <strong>Error: </strong> ${message}
+                </div>
+            `;
+            document.body.appendChild(errorDiv);
+            
+            // Remove error after 5 seconds
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
+        }
+
+        function renderInventoryChart(inventoryData) {
+            if (!inventoryData || inventoryData.length === 0) {
+                showError("No inventory data available");
+                return;
+            }
+
+            const ctx = document.getElementById('inventoryChart').getContext('2d');
+            const labels = inventoryData.map(item => item.name);
+            const values = inventoryData.map(item => item.quantity);
+
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Quantity",
+                        data: values,
+                        backgroundColor: "#3a86ff",
+                        borderRadius: 6,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 12 },
+                            padding: 12,
+                            cornerRadius: 8,
+                            displayColors: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                drawBorder: false,
+                                color: '#e2e8f0'
+                            },
+                            ticks: {
+                                color: '#64748b'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#64748b'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderWasteChart(wasteData) {
+            if (!wasteData || wasteData.length === 0) {
+                showError("No waste data available");
+                return;
+            }
+
+            const ctx = document.getElementById('wasteChart').getContext('2d');
+            const labels = wasteData.map(item => item.name);
+            const values = wasteData.map(item => item.quantity);
+
+            new Chart(ctx, {
+                type: "doughnut",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: [
+                            '#3a86ff',
+                            '#8338ec',
+                            '#10b981',
+                            '#f59e0b',
+                            '#ef4444'
+                        ],
+                        borderWidth: 0,
+                        cutout: '70%'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                padding: 20,
+                                color: '#1e293b'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 12 },
+                            padding: 12,
+                            cornerRadius: 8
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderForecastChart(forecastData) {
+            if (!forecastData || Object.keys(forecastData).length === 0) {
+                showError("No forecast data available");
+                return;
+            }
+
+            const ctx = document.getElementById('forecastChart').getContext('2d');
+            const labels = Object.keys(forecastData);
+            const values = Object.values(forecastData).map(d => d["Predicted Consumption"]);
+
+            new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Predicted Consumption",
+                        data: values,
+                        borderColor: "#3a86ff",
+                        backgroundColor: "rgba(58, 134, 255, 0.1)",
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: "#fff",
+                        pointBorderColor: "#3a86ff",
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 12 },
+                            padding: 12,
+                            cornerRadius: 8,
+                            displayColors: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                drawBorder: false,
+                                color: '#e2e8f0'
+                            },
+                            ticks: {
+                                color: '#64748b'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#64748b'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

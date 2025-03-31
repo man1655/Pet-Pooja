@@ -10,6 +10,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/5787/5787100.png">
     <style>
       .stats-card:hover {
         transform: translateY(-5px);
@@ -21,14 +22,15 @@
   <body class="bg-gray-50">
     <!-- Navbar -->
     <nav class="bg-white shadow-md">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
+      <div class="max-w-7xl  px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-center h-16">
           <div class="flex">
-            <div class="flex-shrink-0 flex items-center">
-              <i class="fas fa-utensils text-indigo-600 text-2xl mr-2"></i>
-              <span class="font-bold text-xl text-indigo-600">AI Kitchen</span>
+            <div class="flex-shrink-0 flex items-center pr-5 md:pr-44">
+            <div class="w-24 h-42">
+              <img class='rounded-xl' src="https://th.bing.com/th/id/OIP.v_ZDjO7OZpPUaRIYXi1y5gHaDt?w=349&h=174&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2" alt="">
             </div>
-            <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+            </div>
+            <div class="hidden sm:ml-6 sm:flex sm:space-x-9">
               <a
                 href="/"
                 class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
@@ -66,37 +68,6 @@
                 Settings
               </a>
             </div>
-          </div>
-          <div class="hidden sm:ml-6 sm:flex sm:items-center">
-            <button
-              class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              <span class="sr-only">View notifications</span>
-              <i class="fas fa-bell"></i>
-            </button>
-            <div class="ml-3 relative">
-              <div>
-                <button
-                  class="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  <span class="sr-only">Open user menu</span>
-                  <img
-                    class="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    alt=""
-                  />
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="-mr-2 flex items-center sm:hidden">
-            <button
-              type="button"
-              class="bg-white inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-            >
-              <span class="sr-only">Open main menu</span>
-              <i class="fas fa-bars"></i>
-            </button>
           </div>
         </div>
       </div>
@@ -360,10 +331,10 @@
             </div>
             <div class="p-4">
               <ul id="inventoryAlertsList" class="divide-y divide-gray-200 capitalize "></ul>
-              <div class="mt-4">
-                <button onclick="openModal()" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
-                  View all alerts <i class="fas fa-arrow-right ml-1"></i>
-              </button>
+              <div class="px-4 mt-5 py-3 bg-gray-50 text-left">
+                <button onclick="openWasteModal()" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                  View all Inventory<i class="fas fa-arrow-right ml-1"></i>
+                </button>
               </div>
             </div>
           </div>
@@ -375,7 +346,7 @@
           >
             <div class="bg-white rounded-lg shadow-lg w-96 max-w-full z-50">
               <div class="p-4 border-b flex justify-between items-center">
-                <h3 class="text-lg font-medium text-gray-900">
+                <h3 class="text-lg pt-5 font-medium text-gray-900">
                   All Inventory Alerts
                 </h3>
                 <button
@@ -502,7 +473,7 @@
               </div>
             </div>
           </div> {% endcomment %}
-          <div class="bg-white shadow rounded-lg">
+          {% comment %} <div class="bg-white shadow rounded-lg">
             <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
                 <h3 class="text-lg leading-6 font-medium text-gray-900 flex items-center">
                     <i class="fas fa-leaf text-green-500 mr-2"></i>
@@ -514,9 +485,83 @@
                     <!-- Waste reduction items will load here -->
                 </ul>
             </div>
-        </div>
+        </div> {% endcomment %}
+
+        <!-- Main Waste Alerts Card -->
+{% comment %} <div class="bg-white shadow rounded-lg">
+  <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+      <h3 class="text-lg leading-6 font-medium text-gray-900 flex items-center">
+          <i class="fas fa-trash-alt text-red-500 mr-2"></i>
+          Waste Alerts
+      </h3>
+  </div>
+  <div class="p-4 max-h-64 overflow-y-auto">  <!-- Fixed height with scroll -->
+      <ul id="wasteAlertsList" class="divide-y divide-gray-200"></ul>
+  </div>
+  <div class="px-4 py-3 bg-gray-50 text-right">
+      <button onclick="openWasteModal()" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+          View all waste <i class="fas fa-arrow-right ml-1"></i>
+      </button>
+  </div>
+</div>
+
+<!-- Waste Modal -->
+<div id="wasteModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden flex justify-center items-center z-50">
+  <div class="bg-white rounded-lg shadow-lg w-96 max-w-full">
+      <div class="p-4 border-b flex justify-between items-center">
+          <h3 class="text-lg font-medium text-gray-900">All Waste Items</h3>
+          <button onclick="closeWasteModal()" class="text-gray-400 hover:text-gray-600">
+              &times;
+          </button>
+      </div>
+      <div class="p-4 max-h-[60vh] overflow-y-auto">  <!-- Responsive height -->
+          <ul id="wasteModalList" class="divide-y divide-gray-200"></ul>
+      </div>
+      <div class="p-4 border-t text-right">
+          <button onclick="closeWasteModal()" class="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300">
+              Close
+          </button>
+      </div>
+  </div>
+</div> {% endcomment %}
         
-        
+<!-- Waste Alerts Card -->
+<div class="bg-white shadow rounded-lg">
+  <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+    <h3 class="text-lg leading-6 font-medium text-gray-900 flex items-center">
+      <i class="fas fa-trash-alt text-red-500 mr-2"></i>
+      Waste Tracking
+    </h3>
+  </div>
+  <div class="p-4">
+    <ul id="wasteAlertsList" class="divide-y divide-gray-200"></ul>
+  </div>
+  <div class="px-4 py-3 bg-gray-50 text-left">
+    <button onclick="openWasteModal()" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+      View all waste <i class="fas fa-arrow-right ml-1"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Waste Modal -->
+<div id="wasteModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden flex justify-center items-center z-50">
+  <div class="bg-white rounded-lg shadow-lg w-96 max-w-full">
+    <div class="p-4 border-b flex justify-between items-center">
+      <h3 class="text-lg font-medium text-gray-900">All Waste Items</h3>
+      <button onclick="closeWasteModal()" class="text-gray-400 hover:text-gray-600">
+        &times;
+      </button>
+    </div>
+    <div class="p-4 max-h-[60vh] overflow-y-auto">
+      <ul id="wasteModalList" class="divide-y divide-gray-200"></ul>
+    </div>
+    <div class="p-4 border-t text-right">
+      <button onclick="closeWasteModal()" class="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
 
           <!-- Menu Performance -->
           <div class="bg-white shadow rounded-lg">
@@ -558,7 +603,7 @@
                 </div>
 
                 <div class="mt-4">
-                    <a href="#" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                    <a href="/render_analysis" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
                         View detailed analysis <i class="fas fa-arrow-right ml-1"></i>
                     </a>
                 </div>
@@ -760,31 +805,6 @@
             </ul>
           </div>
 
-          <table>
-            <thead>
-              <tr>
-                <th>Item Name</th>
-                <th>Quantity</th>
-                <th>Date Added</th>
-                <!-- New column for Date -->
-              </tr>
-            </thead>
-            <tbody id="inventoryTableBody">
-              <!-- Inventory data will be populated here -->
-            </tbody>
-          </table>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Waste Name</th>
-                <th>Quantity</th>
-              </tr>
-            </thead>
-            <tbody id="wasteTableBody">
-              <!-- Waste data will be populated here -->
-            </tbody>
-          </table>
 
           <!-- Connect with Us -->
           <div>
@@ -1016,9 +1036,10 @@
         });
         
         function fetchInventoryData() {
-            fetch('/test/')  
+            fetch('{% url "test" %}')  
             .then(response => response.json())
             .then(data => {
+              console.log(data)
                 updateInventoryAlerts(data.inventory_items);
             })
             .catch(error => console.error('Error fetching data:', error));
@@ -1027,71 +1048,80 @@
         
         
         function updateInventoryAlerts(inventoryItems) {
-            const alertsList = document.getElementById('inventoryAlertsList');
-            const modalList = document.getElementById('modalInventoryList');
-        
-            if (!alertsList || !modalList) return;
-        
-            alertsList.innerHTML = ''; 
-            modalList.innerHTML = '';
-        
-            // Sort inventory by expiry days
-            inventoryItems.sort((a, b) => daysUntilExpiry(a.date_added) - daysUntilExpiry(b.date_added));
-        
-            let hasAlerts = false; 
-        
-            inventoryItems.forEach((item, index) => {
-                let expiryDays = daysUntilExpiry(item.date_added);
-                let alertMessage = '';
-                let buttonClass = '';
-                let buttonText = '';
-        
-                if (expiryDays <= 2) {  
-                    alertMessage = `Expiring in ${expiryDays} days`;
-                    buttonClass = 'bg-red-100 text-red-700';
-                    buttonText = 'Use Fast';
-                } else if (expiryDays <= 4) {  
-                    alertMessage = `Expiring in ${expiryDays} days`;
-                    buttonClass = 'bg-yellow-100 text-yellow-700';
-                    buttonText = 'Use Soon';
-                } else if (item.total_quantity < 5) {  
-                    alertMessage = `Low stock - ${item.total_quantity} remaining`;
-                    buttonClass = 'bg-indigo-100 text-indigo-700';
-                    buttonText = 'Order';
-                }
-        
-                if (alertMessage) {
-                    hasAlerts = true;
-                    const alertItem = `
-                        <li class="py-3">
-                            <div class="flex items-center">
-                                <div class="min-w-0 flex-1">
-                                    <p class="text-sm font-medium text-gray-900 truncate">${item.name}</p>
-                                    <p class="text-sm text-gray-500">${alertMessage}</p>
-                                </div>
-                                <div>
-                                    <button class="${buttonClass} py-1 px-3 rounded-full text-xs font-medium">
-                                        ${buttonText}
-                                    </button>
-                                </div>
-                            </div>
-                        </li>
-                    `;
-        
-                    // Show only the first 5 items in the main UI
-                    if (index < 5) {
-                        alertsList.innerHTML += alertItem;
-                    }
-        
-                    // Add all items to the modal
-                    modalList.innerHTML += alertItem;
-                }
-            });
-        
-            if (!hasAlerts) {
-                alertsList.innerHTML = '<li class="py-3 text-gray-500 text-sm">No new alerts</li>';
-            }
-        }
+          const alertsList = document.getElementById('inventoryAlertsList');
+          const modalList = document.getElementById('modalInventoryList');
+      
+          // Clear existing items
+          alertsList.innerHTML = '';
+          modalList.innerHTML = '';
+      
+          // Sort by expiry date (soonest first)
+          inventoryItems.sort((a, b) => {
+              const aDays = daysUntilExpiry(a.date_added);
+              const bDays = daysUntilExpiry(b.date_added);
+              return aDays - bDays;
+          });
+      
+          // Counter for main alerts list
+          let itemsShownInMainList = 0;
+          const maxItemsInMainList = 5;
+      
+          inventoryItems.forEach((item) => {
+              const expiryDays = daysUntilExpiry(item.date_added);
+              const isLowStock = item.total_quantity < 5;
+      
+              // Determine label based on expiry days
+              let label = '';
+              let labelClass = '';
+              
+              if (expiryDays <= 2) {
+                  label = 'Use First';
+                  labelClass = 'bg-red-100 text-red-700';
+              } else if (expiryDays <= 6) {
+                  label = 'Use Later';
+                  labelClass = 'bg-yellow-100 text-yellow-700';
+              } else {
+                  label = 'Good';
+                  labelClass = 'bg-green-100 text-green-700';
+              }
+      
+              const alertItem = `
+                  <li class="py-3">
+                      <div class="flex items-center">
+                          <div class="min-w-0 flex-1">
+                              <p class="text-sm font-medium text-gray-900 truncate">${item.name}</p>
+                              <p class="text-sm text-gray-500">
+                                  Expires in ${expiryDays} days
+                                  ${isLowStock ? ` | Low stock (${item.total_quantity})` : ''}
+                              </p>
+                          </div>
+                          <div>
+                              <span class="${labelClass} py-1 px-3 rounded-full text-xs font-medium">
+                                  ${label}
+                              </span>
+                          </div>
+                      </div>
+                  </li>
+              `;
+      
+              // Always add to modal
+              modalList.innerHTML += alertItem;
+      
+              // Add to main list only if we haven't reached the limit
+              // (Prioritize soon-to-expire items)
+              if (itemsShownInMainList < maxItemsInMainList) {
+                  alertsList.innerHTML += alertItem;
+                  itemsShownInMainList++;
+              }
+          });
+      
+          // Fallback if no items exist
+          if (inventoryItems.length === 0) {
+              const noItemsMsg = '<li class="py-3 text-gray-500">No inventory items found</li>';
+              alertsList.innerHTML = noItemsMsg;
+              modalList.innerHTML = noItemsMsg;
+          }
+      }
         
         // Helper function: Calculate days until expiry
         function daysUntilExpiry(dateAdded) {
@@ -1120,48 +1150,66 @@
           fetch("/test/")
               .then(response => response.json())
               .then(data => {
-                  updateWasteOpportunities(data.waste_items);
+                updateWasteAlerts(data.waste_items);
               })
               .catch(error => console.error("Error fetching waste data:", error));
       });
       
-      function updateWasteOpportunities(wasteItems) {
-          const wasteList = document.getElementById("waste-opportunities-list");
-          if (!wasteList) {
-              console.error("Waste list container not found!");
-              return;
+      function updateWasteAlerts(wasteItems) {
+        const wasteList = document.getElementById('wasteAlertsList');
+        const wasteModalList = document.getElementById('wasteModalList');
+        
+        // Clear existing items
+        wasteList.innerHTML = '';
+        wasteModalList.innerHTML = '';
+      
+        // Sort by absolute waste quantity (highest first)
+        wasteItems.sort((a, b) => b.quantity - a.quantity);
+      
+        // Counter for main alerts list
+        let itemsShownInMainList = 0;
+        const maxItemsInMainList = 5;
+      
+        wasteItems.forEach((item) => {
+          const wasteItem = `
+            <li class="py-3">
+              <div class="flex items-center justify-between">
+                <div class="min-w-0">
+                  <p class="text-sm font-medium text-gray-900 truncate capitalize">${item.name}</p>
+                  <p class="text-sm text-gray-500">${item.quantity} units wasted</p>
+                </div>
+                <span class="bg-red-100 text-red-700 py-1 px-3 rounded-full text-xs font-medium min-w-[80px] text-center">
+                  ${item.quantity} units
+                </span>
+              </div>
+            </li>
+          `;
+          
+          // Always add to modal
+          wasteModalList.innerHTML += wasteItem;
+          
+          // Add to main list only if we haven't reached the limit
+          if (itemsShownInMainList < maxItemsInMainList) {
+            wasteList.innerHTML += wasteItem;
+            itemsShownInMainList++;
           }
-          wasteList.innerHTML = "";
+        });
       
-          if (wasteItems.length === 0) {
-              wasteList.innerHTML = "<p class='text-sm text-gray-500'>No waste reduction opportunities available.</p>";
-              return;
-          }
+        // Fallback if no items
+        if (wasteItems.length === 0) {
+          const noItemsMsg = '<li class="py-3 text-gray-500">No waste recorded</li>';
+          wasteList.innerHTML = noItemsMsg;
+          wasteModalList.innerHTML = noItemsMsg;
+        }
+      }
       
-          wasteItems.forEach(item => {
-              const costReduction = (item.quantity * 2).toFixed(2); // Example calculation: $2 per unit of waste
+      // Modal functions
+      function openWasteModal() {
+        document.getElementById("wasteModal").classList.remove("hidden");
+      }
       
-              const listItem = document.createElement("li");
-              listItem.classList.add("py-3");
-      
-              listItem.innerHTML = `
-                  <div class="flex items-center">
-                      <div class="min-w-0 flex-1">
-                          <p class="text-sm font-medium text-gray-900 truncate">${item.name}</p>
-                          <p class="text-sm text-gray-500">
-                              Reduce waste by optimizing usage (${item.quantity} units wasted)
-                          </p>
-                      </div>
-                      <div>
-                          <span class="bg-red-100 text-red-700 py-1 px-3 rounded-full text-xs font-medium">
-                              ${item.quantity} Units
-                          </span>
-                      </div>
-                  </div>
-              `;
-      
-              wasteList.appendChild(listItem);
-          });
+      function closeWasteModal() {
+        document.getElementById("wasteModal").classList.add("hidden");
       }
       
       const changeSales = async () => {
@@ -1203,10 +1251,16 @@
     
     // Call function on page load
     window.onload = changeSales;
+
+    function openWasteModal() {
+      document.getElementById("wasteModal").classList.remove("hidden");
+  }
+  
+  function closeWasteModal() {
+      document.getElementById("wasteModal").classList.add("hidden");
+  }
     
-    
-      
-            </script>
+  </script>
             
   </body>
 </html>
