@@ -59,83 +59,19 @@
         <!-- Main Content -->
         <div class="flex-1 overflow-auto">
             <!-- Top Navigation -->
-            <header class="bg-white border-b border-gray-200 py-4 px-6 flex items-center justify-between">
+            <header class="bg-white border-b border-gray-200 py-4 px-6 flex items-center">
                 <div class="flex items-center">
                     <button id="sidebarToggle" class="md:hidden mr-4 text-gray-500">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
-                    <h2 class="text-xl font-semibold text-dark">Analytics Dashboard</h2>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <div class="relative">
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" placeholder="Search..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focu s:border-transparent">
-                    </div>
-                    <div class="relative">
-                        <i class="fas fa-bell text-xl text-gray-500"></i>
-                        <span class="absolute -top-1 -right-1 bg-danger text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
-                    </div>
-                    <div class="flex items-center">
-                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="h-8 w-8 rounded-full mr-2">
-                        <span class="font-medium">John Doe</span>
-                    </div>
+                    <h2 class="text-2xl font-semibold text-dark mx-[580px] py-2 ">Analytics Dashboard</h2>
                 </div>
             </header>
 
             <!-- Main Content Area -->
             <main class="p-6">
                 <!-- Stats Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                    <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-primary">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm font-medium text-gray-500">Total Inventory</p>
-                                <h3 id="totalInventory" class="text-2xl font-bold mt-1">0</h3>
-                                <p class="text-xs text-success mt-2"><i class="fas fa-arrow-up mr-1"></i> Loading...</p>
-                            </div>
-                            <div class="bg-primary/10 p-3 rounded-lg">
-                                <i class="fas fa-boxes text-primary text-xl"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-secondary">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm font-medium text-gray-500">Waste This Month</p>
-                                <h3 id="totalWaste" class="text-2xl font-bold mt-1">$0</h3>
-                                <p class="text-xs text-danger mt-2"><i class="fas fa-arrow-up mr-1"></i> Loading...</p>
-                            </div>
-                            <div class="bg-secondary/10 p-3 rounded-lg">
-                                <i class="fas fa-trash-alt text-secondary text-xl"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-success">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm font-medium text-gray-500">Forecast Accuracy</p>
-                                <h3 class="text-2xl font-bold mt-1">89%</h3>
-                                <p class="text-xs text-success mt-2"><i class="fas fa-arrow-up mr-1"></i> 4% improvement</p>
-                            </div>
-                            <div class="bg-success/10 p-3 rounded-lg">
-                                <i class="fas fa-chart-line text-success text-xl"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-warning">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm font-medium text-gray-500">Low Stock Items</p>
-                                <h3 id="lowStockItems" class="text-2xl font-bold mt-1">0</h3>
-                                <p class="text-xs text-danger mt-2"><i class="fas fa-exclamation-circle mr-1"></i> Needs attention</p>
-                            </div>
-                            <div class="bg-warning/10 p-3 rounded-lg">
-                                <i class="fas fa-exclamation-triangle text-warning text-xl"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+                
                 <!-- Charts Section -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                     <!-- Inventory Chart -->
@@ -242,45 +178,6 @@
             }
         }
 
-        function updateStatsCards(data) {
-            // Update total inventory
-            const totalInventory = data.inventory.reduce((sum, item) => sum + item.quantity, 0);
-            document.querySelector('#totalInventory').textContent = totalInventory.toLocaleString();
-            
-            // Update waste amount (assuming $10 per unit for demo)
-            const totalWaste = data.waste.reduce((sum, item) => sum + item.quantity, 0);
-            document.querySelector('#totalWaste').textContent = `$${(totalWaste * 10).toLocaleString()}`;
-            
-            // Update low stock items (example threshold: < 20)
-            const lowStockItems = data.inventory.filter(item => item.quantity < 20).length;
-            document.querySelector('#lowStockItems').textContent = lowStockItems;
-            
-            // Update trend indicators
-            updateTrendIndicators();
-        }
-
-        function updateTrendIndicators() {
-            // In a real app, you would compare with previous data
-            // For demo, we'll use random improvements
-            const trends = [
-                { id: 'totalInventory', direction: Math.random() > 0.5 ? 'up' : 'down', value: Math.floor(Math.random() * 15) + 1 },
-                { id: 'totalWaste', direction: Math.random() > 0.3 ? 'up' : 'down', value: Math.floor(Math.random() * 10) + 1 },
-                { id: 'lowStockItems', direction: 'danger', text: 'Needs attention' }
-            ];
-            
-            trends.forEach(trend => {
-                const element = document.querySelector(`#${trend.id}`).nextElementSibling;
-                if (trend.direction === 'danger') {
-                    element.innerHTML = `<i class="fas fa-exclamation-circle mr-1"></i> ${trend.text}`;
-                    element.className = 'text-xs text-danger mt-2';
-                } else {
-                    const arrow = trend.direction === 'up' ? 'fa-arrow-up' : 'fa-arrow-down';
-                    const color = trend.direction === 'up' ? 'success' : 'danger';
-                    element.innerHTML = `<i class="fas ${arrow} mr-1"></i> ${trend.value}% from last month`;
-                    element.className = `text-xs text-${color} mt-2`;
-                }
-            });
-        }
 
         function showLoader() {
             document.getElementById("loader").classList.remove('hidden');
