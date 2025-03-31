@@ -1,23 +1,15 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from statsmodels.tsa.statespace.sarimax import SARIMAX
-from django.http import JsonResponse
-import os
 from django.shortcuts import render , redirect , get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login , logout
-from .models import UserData,Sale
+from .models import UserData
 import os
 from django.conf import settings
 
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-from statsmodels.tsa.statespace.sarimax import SARIMAX
 import matplotlib.pyplot as plt
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from sklearn.metrics import mean_absolute_percentage_error
@@ -182,147 +174,88 @@ def test(request):
         'least_sold': least_sold_cleaned
     })
 def menu_analysis():
-    # Get last 7 unique dates from database
-    last_7_dates = Sale.objects.dates('date', 'day', order='DESC')[:7]
-    
-    # Get sales data for these dates
-    sales_data = Sale.objects.filter(date__in=last_7_dates)
-    
-    # Create DataFrame from ORM data
-    df = pd.DataFrame.from_records(sales_data.values(
-        'date', 'item_name', 'quantity'
-    ))
-    
-    # Group and calculate sales
-    item_sales = df.groupby('item_name')['quantity'].sum()
-    
-    most_sold = item_sales.nlargest(2).to_dict()
-    least_sold = item_sales.nsmallest(2).to_dict()
-    
-    return [most_sold, least_sold]
-from django.http import JsonResponse
-import json
-
-def analysis(request):
-    try:
-        inventory_data = list(Inventory.objects.values())
-        waste_data = list(Waste.objects.values())
-        forecast_data = get_ingredient_data()
-        
-        print(forecast_data)
-        return JsonResponse({
-            "inventory": inventory_data,
-            "waste": waste_data,
-            "forecast": forecast_data
-        })
-    
-    except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
    
+
+    file_path = os.path.join(settings.BASE_DIR, "app", "Balaji_Fast_Food_Sales_Final_Complete.csv")
+    df = pd.read_csv(file_path)
+
+    # Convert 'date' column to datetime format
+    df['date'] = pd.to_datetime(df['date'])
+
+    # Sort dataset by date in descending order
+    df = df.sort_values(by='date', ascending=False)
+
+    # Get the last 7 unique dates
+    last_7_dates = df['date'].drop_duplicates().head(7)
+
+    # Filter data for the last 7 unique dates
+    df_last_7_days = df[df['date'].isin(last_7_dates)]
+
+    # Group by 'item_name' and sum the 'quantity' sold
+    item_sales_last_7_days = df_last_7_days.groupby('item_name')['quantity'].sum()
+
+    # Get the two most sold items
+    most_sold_last_7 = item_sales_last_7_days.nlargest(2)
+
+    # Get the two least sold items
+    least_sold_last_7 = item_sales_last_7_days.nsmallest(2)
+    mostsold=dict(most_sold_last_7)
+    leastsold=dict(least_sold_last_7)
     
+    return [mostsold , leastsold]
 
-import os
-import pandas as pd
-import numpy as np
-from django.http import JsonResponse
-from statsmodels.tsa.statespace.sarimax import SARIMAX
 
-def get_ingredient_data():
-    try:
-        # Get sales data from database
-        sales_data = Sale.objects.all().values('date', 'quantity', 'ingredients')
-        df = pd.DataFrame.from_records(sales_data)
 
-        # Check if sales data exists
-        if df.empty:
-            return {"error": "No sales data found in database."}
-
-        # Convert date to datetime format
-        df['date'] = pd.to_datetime(df['date'], errors='coerce')
-        df = df.dropna(subset=['date'])  # Remove rows with invalid dates
-
-        # Process ingredients
-        df['Ingredients'] = df['ingredients'].apply(
-            lambda x: x.split(", ") if x and isinstance(x, str) else []
-        )
-
-        # Create ingredient usage list
-        ingredient_usage = []
-        for _, row in df.iterrows():
-            for ingredient in row['Ingredients']:
-                ingredient = ingredient.strip()
-                if ingredient.lower() != 'seasoning' and ingredient != '':
-                    ingredient_usage.append({
-                        'date': row['date'],
-                        'ingredient': ingredient,
-                        'consumption': row['quantity']
-                    })
-
-        # Check if any ingredients were processed
-        if not ingredient_usage:  # Proper list emptiness check
-            return {"error": "No valid ingredients found in sales data."}
-
-        # Create DataFrame and process
-        ingredient_df = pd.DataFrame(ingredient_usage)
-        if ingredient_df.empty:  # Proper DataFrame emptiness check
-            return {"error": "Failed to create ingredient usage DataFrame."}
-
-        # Pivot the data
+def detect(request):
+    if request.method == "POST":
         try:
-            ingredient_df = ingredient_df.groupby(['date', 'ingredient'])['consumption'] \
-                                        .sum().unstack().fillna(0)
+            # Parse JSON data
+            data = json.loads(request.body)
+            image_base64 = data.get("image")
+            
+            if not image_base64:
+                return JsonResponse({'success': 'false', 'error': 'No image provided'}, status=400)
+            
+            # Decode Base64 image
+            image_data = base64.b64decode(image_base64)
+            
+            # Ensure MEDIA_ROOT exists
+            os.makedirs(settings.MEDIA_ROOT, exist_ok=True)
+            
+            # Define save path in MEDIA_ROOT
+            save_path = os.path.join(settings.MEDIA_ROOT, 'uploaded_image.jpeg')
+            
+            # Save the image in JPEG format
+            with open(save_path, 'wb') as f:
+                f.write(image_data)
+            
+            # Load the saved image for YOLO prediction
+            img = cv2.imread(save_path)
+            if img is None:
+                return JsonResponse({'success': 'false', 'error': 'Failed to read the uploaded image'}, status=400)
+
+            conf = 0.6
+            iou = 0.1
+            results = model(save_path, conf=conf, iou=iou)
+            
+            detected_items = {}
+            output_text = results[0].verbose()
+            print(output_text)
+            
+            matches = re.findall(r"(\d+)\s([\w\s/-]+),", output_text)
+            for count, item_name in matches:
+                item_name = item_name.strip()
+                detected_items[item_name] = detected_items.get(item_name, 0) + int(count)
+            
+            return JsonResponse({
+                'success': 'true',
+                'detected_items': detected_items,
+                'count': len(detected_items),
+                'image_path': save_path
+            })
+        
         except Exception as e:
-            return {"error": f"Data processing failed: {str(e)}"}
+            print(e)
+            return JsonResponse({'success': 'false', 'error': str(e)}, status=500)
 
-        # Forecasting function
-        def forecast_all_ingredients(steps=7):
-            forecast_data = {}
-            required_history = 14
-
-            for ingredient in ingredient_df.columns:
-                data = ingredient_df[ingredient]
-                
-                if len(data) < required_history:
-                    continue
-
-                try:
-                    train = data[:-steps]
-                    last_date = data.index[-1]
-
-                    model = SARIMAX(train,
-                                  order=(1, 1, 1),
-                                  seasonal_order=(1, 1, 1, 7),
-                                  enforce_stationarity=False)
-                    model_fit = model.fit(disp=False)
-                    forecast = model_fit.get_forecast(steps=steps)
-                    
-                    forecast_data[ingredient] = {
-                        'predicted_total': round(forecast.predicted_mean.sum(), 2),
-                        'last_date': last_date.strftime('%Y-%m-%d')
-                    }
-
-                except Exception as e:
-                    print(f"Skipped {ingredient}: {str(e)}")
-                    continue
-
-            return forecast_data or {"error": "No forecasts generated. Check data requirements."}
-
-        # Generate forecast
-        forecast_dict = forecast_all_ingredients(steps=7)
-
-        if 'error' in forecast_dict:
-            return forecast_dict
-
-        # Return top 10 ingredients
-        sorted_forecast = sorted(
-            forecast_dict.items(),
-            key=lambda x: x[1]['predicted_total'],
-            reverse=True
-        )[:10]
-
-        return {item[0]: item[1] for item in sorted_forecast}
-
-    except Exception as e:
-        return {"error": f"System error: {str(e)}"}
-def render_analysis(request) :
-    return render(request ,'analytics.html')
+    return JsonResponse({'success': 'false', 'error': 'Invalid request method'}, status=405)
