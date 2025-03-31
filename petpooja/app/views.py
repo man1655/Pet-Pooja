@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login , logout
-from .models import UserData
+from .models import UserData,Sale
 import os
 from django.conf import settings
 
@@ -170,7 +170,6 @@ def test(request):
 
     most_sold_cleaned = [{"item": key, "quantity": int(value)} for key, value in data[0].items()]
     least_sold_cleaned = [{"item": key, "quantity": int(value)} for key, value in data[1].items()]
-    print(inventory_items)
 
     # Return JSON response
     return JsonResponse({
@@ -180,34 +179,24 @@ def test(request):
         'least_sold': least_sold_cleaned
     })
 def menu_analysis():
-   
-    file_path = os.path.join(settings.BASE_DIR, "app", "Balaji_Fast_Food_Sales_Final_Complete.csv")
-    df = pd.read_csv(file_path)
-
-    # Convert 'date' column to datetime format
-    df['date'] = pd.to_datetime(df['date'])
-
-    # Sort dataset by date in descending order
-    df = df.sort_values(by='date', ascending=False)
-
-    # Get the last 7 unique dates
-    last_7_dates = df['date'].drop_duplicates().head(7)
-
-    # Filter data for the last 7 unique dates
-    df_last_7_days = df[df['date'].isin(last_7_dates)]
-
-    # Group by 'item_name' and sum the 'quantity' sold
-    item_sales_last_7_days = df_last_7_days.groupby('item_name')['quantity'].sum()
-
-    # Get the two most sold items
-    most_sold_last_7 = item_sales_last_7_days.nlargest(2)
-
-    # Get the two least sold items
-    least_sold_last_7 = item_sales_last_7_days.nsmallest(2)
-    mostsold=dict(most_sold_last_7)
-    leastsold=dict(least_sold_last_7)
+    # Get last 7 unique dates from database
+    last_7_dates = Sale.objects.dates('date', 'day', order='DESC')[:7]
     
-    return [mostsold , leastsold]
+    # Get sales data for these dates
+    sales_data = Sale.objects.filter(date__in=last_7_dates)
+    
+    # Create DataFrame from ORM data
+    df = pd.DataFrame.from_records(sales_data.values(
+        'date', 'item_name', 'quantity'
+    ))
+    
+    # Group and calculate sales
+    item_sales = df.groupby('item_name')['quantity'].sum()
+    
+    most_sold = item_sales.nlargest(2).to_dict()
+    least_sold = item_sales.nsmallest(2).to_dict()
+    
+    return [most_sold, least_sold]
 def analysis(request):
     try:
         # Fetch Inventory Data
@@ -245,87 +234,99 @@ from django.http import JsonResponse
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 def get_ingredient_data():
     try:
-        # Load Data
-        file_path = os.path.join(os.path.dirname(__file__), "Balaji_Fast_Food_Sales_Final_Complete.csv")
-        df = pd.read_csv(file_path)
-        df.columns = df.columns.str.strip()
-        df["date"] = pd.to_datetime(df["date"], errors="coerce")
-        df.dropna(subset=["date"], inplace=True)  # Remove invalid dates
+        # Get sales data from database
+        sales_data = Sale.objects.all().values('date', 'quantity', 'ingredients')
+        df = pd.DataFrame.from_records(sales_data)
 
-        # Remove duplicate dates to avoid reindexing issues
-        df = df.drop_duplicates(subset=["date"])
+        # Convert date to datetime format
+        df['date'] = pd.to_datetime(df['date'])
 
-        # Set date as index and ensure frequency
-        df = df.set_index("date")
-        df = df.asfreq("D")  # Setting frequency to daily
+        # Process ingredients
+        df['Ingredients'] = df['ingredients'].apply(
+            lambda x: x.split(", ") if x and isinstance(x, str) else []
+        )
 
-        # Fill missing values with 0 (optional, if needed)
-        df = df.fillna(0)
-
-        # Extract Time Features
-        df["weekday"] = df.index.day_name()
-        df["month"] = df.index.month
-        df["season"] = df["month"].map(lambda x: "Winter" if x in [12,1,2] else 
-                                                 "Spring" if x in [3,4,5] else 
-                                                 "Summer" if x in [6,7,8] else "Fall")
-
-        # Process Ingredients
-        df["Ingredients"] = df["Ingredients"].apply(lambda x: x.split(", ") if isinstance(x, str) else [])
-
-        # Aggregate Ingredient Consumption
+        # Create ingredient usage list
         ingredient_usage = []
         for _, row in df.iterrows():
-            for ingredient in row["Ingredients"]:
-                if ingredient.lower() != "seasoning":  # Exclude "seasoning"
-                    ingredient_usage.append({"date": row.name, "ingredient": ingredient, "consumption": row["quantity"]})
+            for ingredient in row['Ingredients']:
+                ingredient = ingredient.strip()
+                if ingredient.lower() != 'seasoning':
+                    ingredient_usage.append({
+                        'date': row['date'],
+                        'ingredient': ingredient,
+                        'consumption': row['quantity']
+                    })
 
-        # Convert to DataFrame
+        # Create DataFrame and process
         ingredient_df = pd.DataFrame(ingredient_usage)
-        if ingredient_df.empty:
+        if ingredient_usage.empty:
             return JsonResponse({"error": "No ingredient data found."}, status=400)
 
-        # Group and reshape the data
-        ingredient_df = ingredient_df.groupby(["date", "ingredient"])["consumption"].sum().unstack().fillna(0)
+        # Pivot the data
+        ingredient_df = ingredient_df.groupby(['date', 'ingredient'])['consumption'] \
+                                    .sum().unstack().fillna(0)
 
-        # Forecast Function
+        # Forecasting function
         def forecast_all_ingredients(steps=7):
             forecast_data = {}
+            required_history = 14  # Minimum data points for modeling
 
             for ingredient in ingredient_df.columns:
                 data = ingredient_df[ingredient]
-                train = data[:-steps]
-
-                # Check if sufficient data exists for SARIMAX
-                if len(train) < 10:  
-                    continue  
-
-                try:
-                    model = SARIMAX(train, order=(1,1,1), seasonal_order=(1,1,1,7))
-                    model_fit = model.fit(disp=False)  # Suppress warnings
-                    forecast = model_fit.forecast(steps=steps)
-
-                    forecast_data[ingredient] = forecast.sum()  # Sum for total consumption
-
-                except Exception as e:
-                    print(f"Error forecasting {ingredient}: {e}")
+                
+                # Skip ingredients with insufficient history
+                if len(data) < required_history:
                     continue
 
-            # Convert forecast to DataFrame & Get Top 10 Ingredients
+                # Train/test split
+                train = data[:-steps]
+                last_date = data.index[-1]
+
+                try:
+                    # SARIMAX modeling
+                    model = SARIMAX(train,
+                                  order=(1, 1, 1),
+                                  seasonal_order=(1, 1, 1, 7),
+                                  enforce_stationarity=False)
+                    model_fit = model.fit(disp=False)
+                    
+                    # Generate forecast
+                    forecast = model_fit.get_forecast(steps=steps)
+                    predicted_mean = forecast.predicted_mean
+                    
+                    # Store sum of predictions
+                    forecast_data[ingredient] = {
+                        'predicted_total': round(predicted_mean.sum(), 2),
+                        'last_date': last_date.strftime('%Y-%m-%d')
+                    }
+
+                except Exception as e:
+                    print(f"Error forecasting {ingredient}: {str(e)}")
+                    continue
+
             if not forecast_data:
-                return {"error": "No forecast could be generated."}
+                return {"error": "No forecast could be generated. Check data availability."}
 
-            forecast_df = pd.DataFrame.from_dict(forecast_data, orient='index', columns=['Predicted Consumption'])
-            forecast_df = forecast_df.nlargest(10, 'Predicted Consumption')
-            return forecast_df.to_dict(orient="index")  # Convert to JSON-friendly format
+            # Get top 10 ingredients by predicted consumption
+            sorted_forecast = sorted(
+                forecast_data.items(),
+                key=lambda x: x[1]['predicted_total'],
+                reverse=True
+            )[:10]
 
-        # Run Forecast
+            return {k: v for k, v in sorted_forecast}
+
+        # Generate forecast
         forecast_dict = forecast_all_ingredients(steps=7)
 
+        if 'error' in forecast_dict:
+            return JsonResponse(forecast_dict, status=400)
+
         return JsonResponse(forecast_dict, safe=False)
-    
+
     except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
-    
+        return JsonResponse({"error": f"System error: {str(e)}"}, status=500)    
 
 def render_analysis(request) :
     return render(request ,'analytics.html')
