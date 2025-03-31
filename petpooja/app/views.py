@@ -197,34 +197,25 @@ def menu_analysis():
     least_sold = item_sales.nsmallest(2).to_dict()
     
     return [most_sold, least_sold]
+from django.http import JsonResponse
+import json
+
 def analysis(request):
     try:
-        # Fetch Inventory Data
         inventory_data = list(Inventory.objects.values())
-
-        # Fetch Waste Data
         waste_data = list(Waste.objects.values())
-
-        # Get Ingredient Forecast Data
-        forecast_response = get_ingredient_data()
-
-        # If forecast_response is a JsonResponse, extract JSON content
-        if isinstance(forecast_response, JsonResponse):
-            forecast_data = forecast_response.content.decode('utf-8')
-        else:
-            forecast_data = {}
-
-        # Combine All Data
-        response_data = {
+        forecast_data = get_ingredient_data()
+        
+        print(forecast_data)
+        return JsonResponse({
             "inventory": inventory_data,
             "waste": waste_data,
-            "forecast": forecast_data,
-        }
-
-        return JsonResponse(response_data, safe=False)
-
+            "forecast": forecast_data
+        })
+    
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+   
     
 
 import os
@@ -232,14 +223,20 @@ import pandas as pd
 import numpy as np
 from django.http import JsonResponse
 from statsmodels.tsa.statespace.sarimax import SARIMAX
+
 def get_ingredient_data():
     try:
         # Get sales data from database
         sales_data = Sale.objects.all().values('date', 'quantity', 'ingredients')
         df = pd.DataFrame.from_records(sales_data)
 
+        # Check if sales data exists
+        if df.empty:
+            return {"error": "No sales data found in database."}
+
         # Convert date to datetime format
-        df['date'] = pd.to_datetime(df['date'])
+        df['date'] = pd.to_datetime(df['date'], errors='coerce')
+        df = df.dropna(subset=['date'])  # Remove rows with invalid dates
 
         # Process ingredients
         df['Ingredients'] = df['ingredients'].apply(
@@ -251,82 +248,78 @@ def get_ingredient_data():
         for _, row in df.iterrows():
             for ingredient in row['Ingredients']:
                 ingredient = ingredient.strip()
-                if ingredient.lower() != 'seasoning':
+                if ingredient.lower() != 'seasoning' and ingredient != '':
                     ingredient_usage.append({
                         'date': row['date'],
                         'ingredient': ingredient,
                         'consumption': row['quantity']
                     })
 
+        # Check if any ingredients were processed
+        if not ingredient_usage:  # Proper list emptiness check
+            return {"error": "No valid ingredients found in sales data."}
+
         # Create DataFrame and process
         ingredient_df = pd.DataFrame(ingredient_usage)
-        if ingredient_usage.empty:
-            return JsonResponse({"error": "No ingredient data found."}, status=400)
+        if ingredient_df.empty:  # Proper DataFrame emptiness check
+            return {"error": "Failed to create ingredient usage DataFrame."}
 
         # Pivot the data
-        ingredient_df = ingredient_df.groupby(['date', 'ingredient'])['consumption'] \
-                                    .sum().unstack().fillna(0)
+        try:
+            ingredient_df = ingredient_df.groupby(['date', 'ingredient'])['consumption'] \
+                                        .sum().unstack().fillna(0)
+        except Exception as e:
+            return {"error": f"Data processing failed: {str(e)}"}
 
         # Forecasting function
         def forecast_all_ingredients(steps=7):
             forecast_data = {}
-            required_history = 14  # Minimum data points for modeling
+            required_history = 14
 
             for ingredient in ingredient_df.columns:
                 data = ingredient_df[ingredient]
                 
-                # Skip ingredients with insufficient history
                 if len(data) < required_history:
                     continue
 
-                # Train/test split
-                train = data[:-steps]
-                last_date = data.index[-1]
-
                 try:
-                    # SARIMAX modeling
+                    train = data[:-steps]
+                    last_date = data.index[-1]
+
                     model = SARIMAX(train,
                                   order=(1, 1, 1),
                                   seasonal_order=(1, 1, 1, 7),
                                   enforce_stationarity=False)
                     model_fit = model.fit(disp=False)
-                    
-                    # Generate forecast
                     forecast = model_fit.get_forecast(steps=steps)
-                    predicted_mean = forecast.predicted_mean
                     
-                    # Store sum of predictions
                     forecast_data[ingredient] = {
-                        'predicted_total': round(predicted_mean.sum(), 2),
+                        'predicted_total': round(forecast.predicted_mean.sum(), 2),
                         'last_date': last_date.strftime('%Y-%m-%d')
                     }
 
                 except Exception as e:
-                    print(f"Error forecasting {ingredient}: {str(e)}")
+                    print(f"Skipped {ingredient}: {str(e)}")
                     continue
 
-            if not forecast_data:
-                return {"error": "No forecast could be generated. Check data availability."}
-
-            # Get top 10 ingredients by predicted consumption
-            sorted_forecast = sorted(
-                forecast_data.items(),
-                key=lambda x: x[1]['predicted_total'],
-                reverse=True
-            )[:10]
-
-            return {k: v for k, v in sorted_forecast}
+            return forecast_data or {"error": "No forecasts generated. Check data requirements."}
 
         # Generate forecast
         forecast_dict = forecast_all_ingredients(steps=7)
 
         if 'error' in forecast_dict:
-            return JsonResponse(forecast_dict, status=400)
+            return forecast_dict
 
-        return JsonResponse(forecast_dict, safe=False)
+        # Return top 10 ingredients
+        sorted_forecast = sorted(
+            forecast_dict.items(),
+            key=lambda x: x[1]['predicted_total'],
+            reverse=True
+        )[:10]
+
+        return {item[0]: item[1] for item in sorted_forecast}
 
     except Exception as e:
-        return JsonResponse({"error": f"System error: {str(e)}"}, status=500)    
-
+        return {"error": f"System error: {str(e)}"}
 def render_analysis(request) :
     return render(request ,'analytics.html')
