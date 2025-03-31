@@ -33,3 +33,18 @@ class Waste(models.Model) :
     quantity = models.IntegerField(default=0)
     date = models.DateField(auto_now_add=True)
 
+class Sale(models.Model):
+    order_id = models.CharField(max_length=100, unique=True)
+    date = models.DateField(db_index=True)
+    item_name = models.CharField(max_length=200, db_index=True)
+    item_type = models.CharField(max_length=100)
+    item_price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.IntegerField()
+    transaction_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    transaction_type = models.CharField(max_length=50)
+    received_by = models.CharField(max_length=100)
+    time_of_sale = models.CharField(max_length=50)  # Changed from TimeField
+    ingredients = models.TextField()
+
+    def __str__(self):
+        return f"Order {self.order_id} - {self.item_name}"

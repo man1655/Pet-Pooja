@@ -319,16 +319,21 @@
         }
 
         function renderForecastChart(forecastData) {
-            if (!forecastData || Object.keys(forecastData).length === 0) {
+            if (!forecastData || Object.keys(forecastData).length === 0 || forecastData.error) {
                 showError("No forecast data available");
                 return;
             }
-
+        
             const ctx = document.getElementById('forecastChart').getContext('2d');
+            
+            // Extract and format data correctly
             const labels = Object.keys(forecastData);
-            const values = Object.values(forecastData).map(d => d["Predicted Consumption"]);
-
-            new Chart(ctx, {
+            const values = labels.map(ingredient => forecastData[ingredient].predicted_total);
+            const lastDates = labels.map(ingredient => forecastData[ingredient].last_date);
+        
+           
+        
+            window.forecastChart = new Chart(ctx, {
                 type: "line",
                 data: {
                     labels: labels,
@@ -360,12 +365,27 @@
                             bodyFont: { size: 12 },
                             padding: 12,
                             cornerRadius: 8,
-                            displayColors: false
+                            displayColors: false,
+                            callbacks: {
+                                title: (tooltipItems) => {
+                                    return tooltipItems[0].label;
+                                },
+                                label: (context) => {
+                                    const label = labels[context.dataIndex];
+                                    const date = lastDates[context.dataIndex];
+                                    return `Predicted: ${context.parsed.y}\nLast Data Date: ${date}`;
+                                }
+                            }
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Quantity Needed',
+                                color: '#64748b'
+                            },
                             grid: {
                                 drawBorder: false,
                                 color: '#e2e8f0'
@@ -375,11 +395,20 @@
                             }
                         },
                         x: {
+                            title: {
+                                display: true,
+                                text: 'Ingredients',
+                                color: '#64748b'
+                            },
                             grid: {
                                 display: false
                             },
                             ticks: {
-                                color: '#64748b'
+                                color: '#64748b',
+                                callback: function(value) {
+                                    // Truncate long labels
+                                    return this.getLabelForValue(value).substring(0, 15) + '...';
+                                }
                             }
                         }
                     }
